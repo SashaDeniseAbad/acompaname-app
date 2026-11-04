@@ -1,4 +1,5 @@
 import type { TrustedContact } from './trustedContacts';
+import type { SavedAddress } from './addresses';
 import { storageKey } from './storageMode';
 import { pushProfile, PROFILE_KEY as BASE_PROFILE_KEY } from '../services/accountData';
 
@@ -15,6 +16,7 @@ export interface OnboardingProfile {
   preferredPaymentMethod: PaymentMethod;
   trustedContacts: TrustedContact[];
   trustedContactsSetup: boolean;
+  savedAddresses: SavedAddress[];
 }
 
 // Invitado: guarda en localStorage como siempre. Con cuenta: guarda en la copia local y además envía el perfil a la base.
@@ -31,6 +33,7 @@ export const defaultProfile: OnboardingProfile = {
   preferredPaymentMethod: '',
   trustedContacts: [],
   trustedContactsSetup: false,
+  savedAddresses: [],
 };
 
 export function getOnboardingProfile(): OnboardingProfile {
@@ -42,7 +45,10 @@ export function getOnboardingProfile(): OnboardingProfile {
       contact.name.trim().length > 0 && contact.phone.replace(/\D/g, '').length >= 7
     ).slice(0, 2) : [];
     const preferredPaymentMethod: PaymentMethod = profile.preferredPaymentMethod === 'debit-card' || profile.preferredPaymentMethod === 'credit-card' ? profile.preferredPaymentMethod : '';
-    return { ...profile, preferredPaymentMethod, trustedContacts: contacts, trustedContactsSetup: Boolean(profile.trustedContactsSetup) };
+    const savedAddresses = Array.isArray(profile.savedAddresses) ? profile.savedAddresses.filter(item =>
+      item && typeof item.id === 'string' && typeof item.name === 'string' && typeof item.address === 'string' && item.address.trim().length > 0
+    ) : [];
+    return { ...profile, preferredPaymentMethod, trustedContacts: contacts, trustedContactsSetup: Boolean(profile.trustedContactsSetup), savedAddresses };
   } catch {
     return defaultProfile;
   }

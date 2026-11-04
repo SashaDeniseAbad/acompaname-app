@@ -231,3 +231,7 @@ html.high-contrast .brand-version{background:#000;color:#ffeb3b;border:1px solid
 .high-contrast .onboarding-payment-choice{border-color:#65776f;background:#fff;color:#101a16}
 .high-contrast .onboarding-payment-choice.selected{border:3px solid #064d42;background:#e6f4ec}
 @media(max-width:650px){.onboarding-payment-list{margin-top:18px;gap:9px}.onboarding-payment-choice{min-height:68px;padding:11px}.onboarding-payment-choice strong{font-size:calc(16px * var(--text-scale,1))}}
+
+/* Pedir un viaje */
+.sand{background:#f6efd9;color:#7a5c17}
+.saved-icon.trip{background:#f6efd9;color:#7a5c17}

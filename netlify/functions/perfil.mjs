@@ -15,6 +15,7 @@ const toFront = (row, contacts) => ({
   preferredPaymentMethod: row.medio_pago_preferido,
   trustedContactsSetup: row.contactos_configurados,
   trustedContacts: contacts.map((contact) => ({ id: contact.id, name: contact.nombre, phone: contact.telefono })),
+  savedAddresses: Array.isArray(row.direcciones) ? row.direcciones : [],
 });
 
 export const handler = async (event) => {
@@ -45,6 +46,9 @@ export const handler = async (event) => {
         leer_pantallas: Boolean(profile.readScreens),
         medio_pago_preferido: String(profile.preferredPaymentMethod || ''),
         contactos_configurados: Boolean(profile.trustedContactsSetup),
+        direcciones: (Array.isArray(profile.savedAddresses) ? profile.savedAddresses : []).slice(0, 30)
+          .map((item) => ({ id: String(item.id || ''), name: String(item.name || '').trim(), address: String(item.address || '').trim() }))
+          .filter((item) => item.id && item.address),
         actualizado_en: new Date().toISOString(),
       });
       if (error) throw error;

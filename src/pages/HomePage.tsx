@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { classifyNeed } from '../utils/intent';
-import { ArrowRight, CalendarHeart, Clapperboard, Mic, Sparkles, Theater } from 'lucide-react';
+import { ArrowRight, CalendarHeart, Car, Clapperboard, Mic, Sparkles, Theater } from 'lucide-react';
 import type { FlowKind } from '../types';
 interface Props { onSelect: (kind: FlowKind, prompt?: string) => void; largeText: boolean; displayName?: string; onHowItWorks: () => void }
 const quickTasks = [
  { kind: 'event' as const, icon: Theater, title: 'Buscar una salida', detail: 'Música, teatro o deportes', color: 'coral' },
  { kind: 'cinema' as const, icon: Clapperboard, title: 'Ir al cine', detail: 'Elegir película, función y butacas', color: 'sky' },
  { kind: 'appointment' as const, icon: CalendarHeart, title: 'Sacar un turno médico', detail: 'Ver cómo sería el proceso', color: 'sage' },
+ { kind: 'trip' as const, icon: Car, title: 'Pedir un viaje', detail: 'Elegir adónde ir y desde dónde', color: 'sand' },
  { kind: 'other' as const, icon: Sparkles, title: 'Otra cosa', detail: 'Contame qué necesitás', color: 'lilac' }
 ];
 export function HomePage({ onSelect, largeText, displayName = '', onHowItWorks }: Props) {

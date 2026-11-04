@@ -14,6 +14,7 @@ create table public.perfiles (
   leer_pantallas          boolean not null default false,
   medio_pago_preferido    text not null default '' check (medio_pago_preferido in ('debit-card', 'credit-card', '')),
   contactos_configurados  boolean not null default false,
+  direcciones             jsonb not null default '[]'::jsonb,
   creado_en               timestamptz not null default now(),
   actualizado_en          timestamptz not null default now()
 );
@@ -34,7 +35,7 @@ create table public.contactos_confianza (
 create table public.gestiones (
   id           uuid primary key default gen_random_uuid(),
   usuario_id   uuid not null references public.perfiles (id) on delete cascade,
-  tipo         text not null check (tipo in ('event', 'cinema', 'appointment', 'other')),
+  tipo         text not null check (tipo in ('event', 'cinema', 'appointment', 'trip', 'other')),
   titulo       text not null,
   descripcion  text not null default '',
   modo         text not null default 'demo' check (modo in ('demo', 'real')),

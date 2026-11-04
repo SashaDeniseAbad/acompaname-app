@@ -4,7 +4,7 @@ import { authenticate, ensureProfileRow, json } from '../lib/supabase-admin.mjs'
 // POST: guarda una gestión nueva.
 // Los nombres de los campos que viajan al front son los mismos que usa SavedTask en src/types/index.ts.
 
-const tipos = ['event', 'cinema', 'appointment', 'other'];
+const tipos = ['event', 'cinema', 'appointment', 'trip', 'other'];
 
 const toFront = (row) => ({ id: row.id, kind: row.tipo, title: row.titulo, description: row.descripcion, createdAt: row.creado_en, mode: row.modo });
 
