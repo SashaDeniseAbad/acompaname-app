@@ -1,6 +1,7 @@
 import { ArrowLeft, ArrowRight, Check, CreditCard, Eye, Mic, Volume2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { OnboardingProfile } from '../utils/profile';
+import { isAccountMode } from '../utils/storageMode';
 
 interface Props { onComplete: (profile: OnboardingProfile) => void; onCancel: () => void; onStepChange: () => void; onPreferencesPreview: (preferences: Pick<OnboardingProfile, 'largerText' | 'highContrast'>) => void; initialProfile: OnboardingProfile; initialStep?: number }
 const steps = ['Quién la usa', 'Perfil', 'Preferencias', 'Medio de pago', 'Contactos de confianza', 'Revisar'];
@@ -63,7 +64,7 @@ export function OnboardingPage({ onComplete, onCancel, onStepChange, onPreferenc
           ] as const).map(([value, label]) => <button key={value} className={`onboarding-choice small ${profile.accessibility === value ? 'selected' : ''}`} aria-pressed={profile.accessibility === value} onClick={() => update({ accessibility: profile.accessibility === value ? '' : value })}>{label}</button>)}
         </div>
       </fieldset>
-      <p className="onboarding-privacy">Tu nombre, ciudad y preferencias quedan guardados solo en este dispositivo.</p>
+      <p className="onboarding-privacy">Tu nombre, ciudad y preferencias quedan guardados {isAccountMode() ? 'en tu cuenta' : 'solo en este dispositivo'}.</p>
     </section>}
 
     {step === 2 && <section className="onboarding-step" aria-labelledby="onboarding-title">
@@ -85,7 +86,7 @@ export function OnboardingPage({ onComplete, onCancel, onStepChange, onPreferenc
           ['debit-card', 'Tarjeta de débito'], ['credit-card', 'Tarjeta de crédito'], ['', 'Lo hago más adelante']
         ] as const).map(([value, label]) => <button key={value || 'later'} className={`onboarding-payment-choice ${profile.preferredPaymentMethod === value ? 'selected' : ''}`} aria-pressed={profile.preferredPaymentMethod === value} onClick={() => update({ preferredPaymentMethod: value })}><span className="preference-icon">{value ? <CreditCard/> : <span aria-hidden="true">⏳</span>}</span><strong>{label}</strong>{profile.preferredPaymentMethod === value && <Check size={20}/>}</button>)}
       </div>
-      <p className="onboarding-privacy">Por ahora guardamos esta preferencia en este dispositivo. No pedimos ni guardamos números de tarjeta y todavía no procesamos pagos.</p>
+      <p className="onboarding-privacy">Por ahora guardamos esta preferencia {isAccountMode() ? 'en tu cuenta' : 'en este dispositivo'}. No pedimos ni guardamos números de tarjeta y todavía no procesamos pagos.</p>
     </section>}
 
     {step === 4 && <section className="onboarding-step trusted-onboarding-step" aria-labelledby="onboarding-title">
@@ -102,7 +103,7 @@ export function OnboardingPage({ onComplete, onCancel, onStepChange, onPreferenc
         </fieldset>;
       })}
       {contactError && <p className="trusted-error" role="alert">{contactError}</p>}
-      <p className="onboarding-privacy">Los nombres y teléfonos se guardan solo en este dispositivo. No pedimos acceso a tu agenda.</p>
+      <p className="onboarding-privacy">Los nombres y teléfonos se guardan {isAccountMode() ? 'en tu cuenta' : 'solo en este dispositivo'}. No pedimos acceso a tu agenda.</p>
     </section>}
 
     {step === 5 && <section className="onboarding-step" aria-labelledby="onboarding-title">
@@ -123,7 +124,7 @@ export function OnboardingPage({ onComplete, onCancel, onStepChange, onPreferenc
         <div><dt>Lectura en voz alta</dt><dd>{profile.readScreens ? 'Activada' : 'Desactivada'}</dd></div>
         <div><dt>Medio de pago preferido</dt><dd>{profile.preferredPaymentMethod === 'debit-card' ? 'Tarjeta de débito' : profile.preferredPaymentMethod === 'credit-card' ? 'Tarjeta de crédito' : 'Lo elegiré más adelante'}</dd></div>
       </dl>
-      <p className="onboarding-privacy">Esta configuración se guarda en este dispositivo. No es una cuenta ni se envía a un servicio externo.</p>
+      <p className="onboarding-privacy">{isAccountMode() ? 'Esta configuración se guarda en tu cuenta, así la tenés en cualquier celular.' : 'Esta configuración se guarda en este dispositivo. No es una cuenta ni se envía a un servicio externo.'}</p>
     </section>}
 
     <div className="onboarding-actions"><button className="secondary-button" onClick={back}><ArrowLeft size={18}/>{step === 0 ? 'Bienvenida' : 'Volver'}</button><button className="primary-button" onClick={next}>{step === steps.length - 1 ? 'Guardar y empezar' : 'Continuar'}{step === steps.length - 1 ? <Check size={19}/> : <ArrowRight size={19}/>}</button></div>

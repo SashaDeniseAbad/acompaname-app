@@ -14,7 +14,7 @@ npm install
 npm run dev
 ```
 
-Abrí la dirección local que muestra Vite (por defecto `http://localhost:5173`). Para validar el bundle de producción:
+Abrí la dirección local que muestra Vite (por defecto `http://localhost:5173`). `npm run dev` levanta también el back: las funciones de `netlify/functions/` responden en la misma dirección, bajo `/.netlify/functions/`. Para validar el bundle de producción:
 
 ```bash
 npm run build
@@ -26,6 +26,20 @@ Los resultados demo están identificados en la interfaz y son ejemplos ficticios
 La primera visita incluye una configuración de uso de cuatro pasos: para quién se prepara la app, un nombre y perfil opcionales, la ciudad, preferencias de accesibilidad y una revisión antes de guardar. La ciudad configurada (Mendoza por defecto) se reutiliza en salidas y sedes de turnos para no volver a pedirla en cada flujo. Estos datos se guardan solo en `localStorage` de este dispositivo. V1 no crea cuentas ni guarda credenciales, datos de salud ni medios de pago.
 
 Durante el onboarding se pueden guardar hasta dos contactos de confianza, ambos opcionales. Los perfiles V1 existentes ven ese paso una sola vez. Después, la app muestra esos contactos y permite llamar desde el marcador del teléfono; sus datos quedan guardados solo en el dispositivo y la lista no ofrece agregar ni quitar contactos desde el uso diario. Abrir o cerrar esta ayuda no reinicia el flujo en curso. Al escribir una solicitud de salida que menciona “sábado”, la fecha se completa con el próximo sábado; el usuario puede cambiarla antes de buscar.
+
+## Configurar la base de datos (una sola vez)
+
+La app guarda los datos de los usuarios en Supabase. Las claves no están en el repo porque es público: cada integrante las copia a un archivo `.env` local, que nunca se sube.
+
+1. Pedile a quien administra el proyecto que te invite a la organización de Supabase. Te llega un mail: aceptá la invitación y entrá a supabase.com.
+2. En la carpeta del proyecto, copiá `.env.example` y renombrá la copia a `.env`.
+3. En Supabase, abrí el proyecto `acompaname` y entrá a **Project Settings > API Keys**. Copiá estos valores en tu `.env`:
+   - `VITE_SUPABASE_URL` y `SUPABASE_URL`: la URL del proyecto (por ejemplo `https://abcdefgh.supabase.co`).
+   - `VITE_SUPABASE_PUBLISHABLE_KEY`: la clave que empieza con `sb_publishable_`.
+   - `SUPABASE_SECRET_KEY`: la clave que empieza con `sb_secret_`.
+4. Guardá el archivo. No hace falta repetir estos pasos: sirven para todas las veces que levantes el proyecto.
+
+Nunca subas el archivo `.env` ni pegues la clave secreta en el código, en el README ni en un mensaje público: da acceso total a la base de datos.
 
 ## Proveedores de datos
 

@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, Check, Clapperboard, CreditCard, MapPin } from '
 import { DateSelector } from '../components/DateSelector';
 import type { SavedTask } from '../types';
 import { saveTask } from '../utils/storage';
+import { isAccountMode } from '../utils/storageMode';
 import type { PaymentMethod } from '../utils/profile';
 
 type Step = 'theater' | 'movie' | 'date' | 'time' | 'seat' | 'tickets' | 'payment' | 'review' | 'done';
@@ -95,7 +96,7 @@ export function CinemaFlow({ city: profileCity, preferredPaymentMethod, onPaymen
         {step === 'time' && <div className="cinema-choices">{times.map(option => <PickButton key={option.id} option={option} chosen={time === option.id} onClick={() => setTime(option.id)}/>)}</div>}
         {step === 'seat' && <div className="cinema-choices">{seatZones.map(option => <PickButton key={option.id} option={option} chosen={seatZone === option.id} onClick={() => setSeatZone(option.id)}/>)}</div>}
         {step === 'tickets' && <div className="cinema-choices cinema-quantity">{['1', '2', '3', '4'].map(value => <button key={value} type="button" aria-pressed={ticketCount === value} className={`choice-button${ticketCount === value ? ' chosen' : ''}`} onClick={() => setTicketCount(value)}>{value} {value === '1' ? 'entrada' : 'entradas'}{ticketCount === value && <Check size={19}/>}</button>)}</div>}
-        {step === 'payment' && <><div className="cinema-choices">{paymentOptions.map(option => <PickButton key={option.id} option={option} chosen={payment === option.id} onClick={() => { const method = option.id as PaymentMethod; setPayment(method); onPaymentMethodChange(method); }} icon={<CreditCard size={21}/>}/>)}</div><p className="privacy-note"><CreditCard size={18}/><span>Se guarda la preferencia en este dispositivo. No ingreses datos de tarjeta: Acompáñame todavía no procesa pagos.</span></p></>}
+        {step === 'payment' && <><div className="cinema-choices">{paymentOptions.map(option => <PickButton key={option.id} option={option} chosen={payment === option.id} onClick={() => { const method = option.id as PaymentMethod; setPayment(method); onPaymentMethodChange(method); }} icon={<CreditCard size={21}/>}/>)}</div><p className="privacy-note"><CreditCard size={18}/><span>Se guarda la preferencia {isAccountMode() ? 'en tu cuenta' : 'en este dispositivo'}. No ingreses datos de tarjeta: Acompáñame todavía no procesa pagos.</span></p></>}
         <div className="privacy-note"><MapPin size={18}/><span>{step === 'theater' ? `Tu ciudad es ${city}.` : `Este plan se prepara para ${city}.`}</span></div>
         <button className="primary-button full-button" disabled={step === 'theater' ? !theater : step === 'movie' ? !movie : step === 'time' ? !time : step === 'seat' ? !seatZone : step === 'payment' ? !payment : false} onClick={() => setStep(steps[stepIndex + 1])}><span>Continuar</span><ArrowRight size={19}/></button>
       </section>
@@ -117,7 +118,7 @@ export function CinemaFlow({ city: profileCity, preferredPaymentMethod, onPaymen
       </section>
     </>}
 
-    {step === 'done' && <section className="done-card"><span className="done-check"><Check size={28}/></span><h1>Plan guardado</h1><p>Guardamos tus elecciones en Mis gestiones para que las tengas a mano. La disponibilidad y el pago se confirman directamente con el cine; no se reservó ninguna entrada ni se realizó un cobro.</p>{saved && <div className="inline-message">Tu plan quedó guardado en este dispositivo.</div>}<button className="primary-button full-button" onClick={onSaved}>Ir a Mis gestiones <ArrowRight size={18}/></button><button className="text-button" onClick={onHome}>Volver al inicio</button></section>}
+    {step === 'done' && <section className="done-card"><span className="done-check"><Check size={28}/></span><h1>Plan guardado</h1><p>Guardamos tus elecciones en Mis gestiones para que las tengas a mano. La disponibilidad y el pago se confirman directamente con el cine; no se reservó ninguna entrada ni se realizó un cobro.</p>{saved && <div className="inline-message">Tu plan quedó guardado {isAccountMode() ? 'en tu cuenta' : 'en este dispositivo'}.</div>}<button className="primary-button full-button" onClick={onSaved}>Ir a Mis gestiones <ArrowRight size={18}/></button><button className="text-button" onClick={onHome}>Volver al inicio</button></section>}
   </main>;
 }
 

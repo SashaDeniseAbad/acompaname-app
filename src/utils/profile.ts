@@ -1,4 +1,6 @@
 import type { TrustedContact } from './trustedContacts';
+import { storageKey } from './storageMode';
+import { pushProfile, PROFILE_KEY as BASE_PROFILE_KEY } from '../services/accountData';
 
 export type PaymentMethod = 'debit-card' | 'credit-card' | '';
 
@@ -15,7 +17,8 @@ export interface OnboardingProfile {
   trustedContactsSetup: boolean;
 }
 
-const PROFILE_KEY = 'acompaname-v1-profile';
+// Invitado: guarda en localStorage como siempre. Con cuenta: guarda en la copia local y además envía el perfil a la base.
+const profileKey = () => storageKey(BASE_PROFILE_KEY);
 
 export const defaultProfile: OnboardingProfile = {
   role: 'self',
@@ -32,7 +35,7 @@ export const defaultProfile: OnboardingProfile = {
 
 export function getOnboardingProfile(): OnboardingProfile {
   try {
-    const saved = localStorage.getItem(PROFILE_KEY);
+    const saved = localStorage.getItem(profileKey());
     const profile = saved ? { ...defaultProfile, ...JSON.parse(saved) as Partial<OnboardingProfile> } : defaultProfile;
     const contacts = Array.isArray(profile.trustedContacts) ? profile.trustedContacts.filter(contact =>
       contact && typeof contact.id === 'string' && typeof contact.name === 'string' && typeof contact.phone === 'string' &&
@@ -46,5 +49,6 @@ export function getOnboardingProfile(): OnboardingProfile {
 }
 
 export function saveOnboardingProfile(profile: OnboardingProfile) {
-  try { localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); } catch { /* Continue without persistence when storage is unavailable. */ }
+  try { localStorage.setItem(profileKey(), JSON.stringify(profile)); } catch { /* Continue without persistence when storage is unavailable. */ }
+  pushProfile(profile);
 }
